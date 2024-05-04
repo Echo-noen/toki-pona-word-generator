@@ -5,17 +5,10 @@ from tqdm import tqdm
 start = ['a', 'an', 'e', 'en', 'i', 'in', 'ja', 'jan', 'je', 'jen', 'jo', 'jon', 'ju', 'jun', 'ka', 'kan', 'ke', 'ken', 'ki', 'kin', 'ko', 'kon', 'ku', 'kun', 'la', 'lan', 'le', 'len', 'li', 'lin', 'lo', 'lon', 'lu', 'lun', 'ma', 'man', 'me', 'men', 'mi', 'min', 'mo', 'mon', 'mu', 'mun', 'na', 'nan', 'ne', 'nen', 'ni', 'nin', 'no', 'non', 'nu', 'nun', 'o', 'on', 'pa', 'pan', 'pe', 'pen', 'pi', 'pin', 'po', 'pon', 'pu', 'pun', 'sa', 'san', 'se', 'sen', 'si', 'sin', 'so', 'son', 'su', 'sun', 'ta', 'tan', 'te', 'ten', 'to', 'ton', 'tu', 'tun', 'u', 'un', 'wa', 'we', 'wen', 'wi', 'win']
 other = ['ja', 'jan', 'je', 'jen', 'jo', 'jon', 'ju', 'jun', 'ka', 'kan', 'ke', 'ken', 'ki', 'kin', 'ko', 'kon', 'ku', 'kun', 'la', 'lan', 'le', 'len', 'li', 'lin', 'lo', 'lon', 'lu', 'lun', 'ma', 'man', 'me', 'men', 'mi', 'min', 'mo', 'mon', 'mu', 'mun', 'na', 'nan', 'ne', 'nen', 'ni', 'nin', 'no', 'non', 'nu', 'nun', 'pa', 'pan', 'pe', 'pen', 'pi', 'pin', 'po', 'pon', 'pu', 'pun', 'sa', 'san', 'se', 'sen', 'si', 'sin', 'so', 'son', 'su', 'sun', 'ta', 'tan', 'te', 'ten', 'to', 'ton', 'tu', 'tun', 'wa', 'we', 'wen', 'wi', 'win']
 
-# In case you need to configure your own syllables just modify the forbidden_substrings variable in generate_combinations()
-def has_forbidden_substring(words, forbidden):
-    for word in words:
-        if any(substring in word for substring in forbidden):
-            return True
-    return False
-
 def generate_combinations(start, other, num_terms):
     # Change this to change the file name
     filename = f"tp_{num_terms}_syllable_words.txt"
-    # sina sona e ni come on
+    # These are the forbidden substrings, so characters that cannopt be found anywhere in the word. If these are present, the whole word is discarded
     forbidden_substrings = ['nn', 'nm']
     with open(filename, 'w') as file:
         # Here you calculate the total number of combinations possible, which is like only useful for the progress bar
@@ -29,10 +22,12 @@ def generate_combinations(start, other, num_terms):
             for o_combination in other_combinations:
                 # Combine the start syllables with the other syllables (other_combinations)
                 combination = [s] + list(o_combination)
+                # Convert combination to a string
+                word = ''.join(combination)
                 # If it doesn't have a forbidden substring,
-                if not has_forbidden_substring(combination, forbidden_substrings):
+                if not any(substring in word for substring in forbidden_substrings):
                 # Write the word to the file
-                    file.write(''.join(combination) + '\n')
+                    file.write(word + '\n')
                 # Update the progress bar
                 progress_bar.update(1)
         
